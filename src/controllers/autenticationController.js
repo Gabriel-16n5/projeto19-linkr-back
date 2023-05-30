@@ -6,18 +6,19 @@ export async function createAccount(req, res) {
 const {email, password, username, pictureUrl}= req.body
 
     try{
-
+        // Verificar se esse e-mail já foi cadastrado
         const emailExiste = await db.query('SELECT * FROM users WHERE email = $1', [email])
-
         if (emailExiste.rowCount !== 0) return res.status(409).send("e-mail já cadastrado")
 
+        // Criptografar senha
         const hash = bcrypt.hashSync(password, 10)
 
+        // Criar conta e guardar senha encriptada no banco
         await db.query(
             'INSERT INTO users (email, password, username, "pictureUrl") VALUES ($1, $2, $3, $4)',
          [email, hash, username , pictureUrl])
     
-        res.status(201).send("cadastro realizado com");
+        res.status(201).send("cadastro realizado com sucesso");
     } catch (erro){
         res.send(erro.message)
     }
