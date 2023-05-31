@@ -8,7 +8,7 @@ const timelineRouter = Router()
 
 timelineRouter.post("/timeline", auth, validateSchema(postsSchema), createPost);
 timelineRouter.get("/timeline", auth, getPost);
-timelineRouter.delete("/timeline:id", auth, deletePost);
-timelineRouter.put("/timeline:id", auth, editPost);
+timelineRouter.delete("/timeline/:id", auth, deletePost);
+timelineRouter.put("/timeline/:id", auth, editPost);
 
 export default timelineRouter;
