@@ -33,7 +33,7 @@ export async function loginAccount(req, res) {
             if (usuario.rowCount === 0) return res.status(404).send("usuário não encontrado")
     
             // Verificar se a senha digitada corresponde com a criptografada
-            const senhaEstaCorreta = bcrypt.compareSync(senha, usuario.senha)
+            const senhaEstaCorreta = bcrypt.compareSync(password, usuario.senha)
             if (!senhaEstaCorreta) return res.status(401).send("Senha incorreta")
     
             // Se deu tudo certo, criar um token para enviar ao usuário
