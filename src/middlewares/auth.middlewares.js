@@ -1,6 +1,7 @@
-   import { db } from "../database/database.connection"; 
+   /*
+   import { db } from "../database/database.connection.js"; 
 
-   export default async function auth(req, res, next) {
+   export default async function auth (req, res, next) {
   // O cliente deve enviar um header de authorization com o token
   const { authorization } = req.headers;
 
@@ -31,5 +32,5 @@
     res.status(500).send(err.message);
   }
   }
-
+*/
 
