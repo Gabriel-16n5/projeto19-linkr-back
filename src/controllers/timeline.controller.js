@@ -32,7 +32,7 @@ export async function createPost(req, res) {
       return res.status(401).send("Usuário não encontrado");
 
     await db.query(
-      `INSERT INTO posts (url, text, userId) VALUES ($1, $2, $3)`,
+      `INSERT INTO posts (url, text, "idSession") VALUES ($1, $2, $3)`,
       [url, text, sessaoEncontrada.idUser]
     );
     res.status(201).send("Post criado com sucesso");
@@ -42,10 +42,19 @@ export async function createPost(req, res) {
 }
 
 export async function getPost(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+  if (!token) return res.status(401).send("Token inexistente");
   try {
+    const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [token]);
+
+    if (sessao.rows.length === 0) return res.status(401).send("Token inválido");
+    const sessaoEncontrada = sessao.rows[0];
+    
     const posts = await db.query(
-      `SELECT * FROM posts ORDER BY createdAt DESC LIMIT 20`
+      `SELECT * FROM posts ORDER BY id DESC LIMIT 20`
     );
+    
     res.status(201).send(posts.rows);
   } catch (erro) {
     res.send(erro.message);
