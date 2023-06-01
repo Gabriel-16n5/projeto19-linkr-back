@@ -33,7 +33,7 @@ export async function createPost(req, res) {
 
     await db.query(
       `INSERT INTO posts (url, text, "idSession") VALUES ($1, $2, $3)`,
-      [url, text, sessaoEncontrada.idUser]
+      [url, text, sessaoEncontrada.id]
     );
     res.status(201).send("Post criado com sucesso");
   } catch (erro) {
@@ -148,4 +148,54 @@ export async function editPost(req, res) {
   } catch (erro) {
     res.send(erro.message);
   }
+}
+
+export async function postLikes(req, res) {
+  const { postId } = req.body
+  // O cliente deve enviar um header de authorization com o token
+  const { authorization } = req.headers;
+  // para pegar o token vamos tirar a palavra Bearer
+  const token = authorization?.replace("Bearer ", "");
+   // Se não houver token, não há autorização para continuar
+   if (!token) return res.status(401).send("Token inexistente");
+
+    try {
+      const userId = await db.query(`SELECT * FROM sessions WHERE token=$1`, [token])
+
+      const checkLikeExist = await db.query(`SELECT * FROM likes WHERE "userId"=$1 AND "postId"=$2`, [userId.rows[0].idUser ,postId])
+
+      if(checkLikeExist.rows[0]) return res.status(404).send("Post already liked, you can only delete this like")
+
+      await db.query(`INSERT INTO likes ("userId", "postId") VALUES ($1, $2)`, [userId.rows[0].idUser ,postId])
+
+      res.status(200).send("Post liked by this user successfully")
+    } catch (erro) {
+      res.send(erro.message);
+    }
+}
+
+export async function deleteLikes(req, res) {
+  const { postId } = req.body
+  // O cliente deve enviar um header de authorization com o token
+  const { authorization } = req.headers;
+  // para pegar o token vamos tirar a palavra Bearer
+  const token = authorization?.replace("Bearer ", "");
+   // Se não houver token, não há autorização para continuar
+   if (!token) return res.status(401).send("Token inexistente");
+
+    try {
+      const userId = await db.query(`SELECT * FROM sessions WHERE token=$1`, [token])
+
+      const likeInfo = await db.query(`SELECT * FROM likes WHERE "userId"=$1 AND "postId"=$2`, [userId.rows[0].idUser ,postId])
+
+      console.log(likeInfo.rows[0])
+
+      if (!likeInfo.rows[0]) return res.status(404).send("This post isnt liked by this user yet")
+
+      await db.query(`DELETE FROM likes WHERE id=$1`, [likeInfo.rows[0].id])
+
+      res.send("Like deleted successfully").status(201)
+    } catch (erro) {
+      res.send(erro.message);
+    }
 }
