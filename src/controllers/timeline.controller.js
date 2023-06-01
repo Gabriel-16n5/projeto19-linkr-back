@@ -1,5 +1,7 @@
 import { db } from "../database/database.connection.js";
-
+import urlMetadata from "url-metadata";
+import fetch from "node-fetch";
+global.fetch = fetch;
 export async function createPost(req, res) {
   const { url, text } = req.body;
 
@@ -42,22 +44,57 @@ export async function createPost(req, res) {
 }
 
 export async function getPost(req, res) {
+
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
   if (!token) return res.status(401).send("Token inexistente");
   try {
+
     const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [token]);
 
     if (sessao.rows.length === 0) return res.status(401).send("Token inválido");
     const sessaoEncontrada = sessao.rows[0];
-    
+
     const posts = await db.query(
-      `SELECT * FROM posts ORDER BY id DESC LIMIT 20`
+      `SELECT posts.*,users.username 
+      FROM posts 
+      JOIN sessions ON sessions.id=posts."idSession" 
+      JOIN users ON sessions."idUser"=users.id 
+      ORDER BY posts.id DESC LIMIT 20;`
     );
     
-    res.status(201).send(posts.rows);
+    const allPosts = posts.rows
+    
+    let array = []
+    
+    for (let i=0;i<posts.rowCount;i++){  
+      const likes = await db.query(`SELECT users.username FROM likes JOIN users ON likes."userId"=users.id WHERE likes."postId"=${allPosts[i].id};`)  
+      await urlMetadata(allPosts[i].url)
+        .then((metadata) => {
+          if (likes.rows===undefined){
+            likes.rows=[]
+          }
+          const object = {
+            postId:allPosts[i].id,
+            username:allPosts[i].username,
+            text:allPosts[i].text,
+            title:metadata['og:title'],
+            description:metadata['og:description'],
+            url:metadata['og:url'],
+            image:metadata['og:image'],
+            peopleLike:likes.rows
+          }
+          array.push(object) 
+        },
+          (err) => {
+            console.log(err)
+          })
+         
+      }
+      
+    res.status(201).send(array);
   } catch (erro) {
-    res.send(erro.message);
+    res.status(500).send(erro.message);
   }
 }
 
@@ -94,11 +131,11 @@ export async function deletePost(req, res) {
     // Verificar se o post existe e pertence ao usuário
     const postExiste = await db.query(`SELECT * FROM posts WHERE id = $1 AND userId = $2`, [id, sessaoEncontrada.idUser]);
     if (postExiste.rows.length === 0) {
-    return res.status(404).send("Post não encontrado ou não pertence ao usuário");
+      return res.status(404).send("Post não encontrado ou não pertence ao usuário");
     }
 
     //Deletar
-    await db.query(`DELETE FROM posts WHERE id=$1`,[id]);
+    await db.query(`DELETE FROM posts WHERE id=$1`, [id]);
 
     res.status(201).send("Post deletado com sucesso");
   } catch (erro) {
@@ -138,7 +175,7 @@ export async function editPost(req, res) {
     // Verificar se o post existe e pertence ao usuário
     const postExiste = await db.query(`SELECT * FROM posts WHERE id = $1 AND userId = $2`, [id, sessaoEncontrada.idUser]);
     if (postExiste.rows.length === 0) {
-    return res.status(404).send("Post não encontrado ou não pertence ao usuário");
+      return res.status(404).send("Post não encontrado ou não pertence ao usuário");
     }
 
     //editar
