@@ -7,9 +7,8 @@ const {email, password, username, pictureUrl}= req.body
 
     try{
         // Verificar se esse e-mail já foi cadastrado
-        const emailExiste = await db.query('SELECT * FROM users WHERE email = $1', [email])
-        if (emailExiste.rowCount !== 0) return res.status(409).send("e-mail já cadastrado")
-
+        const validation = await db.query('SELECT * FROM users WHERE email = $1 OR username = $2', [email, username])
+        if (validation.rowCount !== 0) return res.status(409).send("e-mail ou usuário já cadastrado")
         // Criptografar senha
         const hash = bcrypt.hashSync(password, 10)
 
