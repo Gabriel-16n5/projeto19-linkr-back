@@ -38,9 +38,17 @@ export async function loginAccount(req, res) {
             // Se deu tudo certo, criar um token para enviar ao usuário
             const token = uuid()
     
+            //Verificamos se o usuario ja logou com esta conta no banco antes
+            const sessionExist = await db.query(`SELECT * FROM sessions WHERE "idUser" = $1;`, [usuario.rows[0].id])
             // Guardaremos o token e o id do usuário para saber que ele está logado
-            await db.query(`INSERT INTO sessions (token, "idUser") VALUES ($1, $2)`, [token, usuario.rows[0].id])
-    
+            
+            if (!sessionExist.rows[0]){
+                // Se for a primeira vez do usuario logando adicionaremos seus dados na tabela
+                await db.query(`INSERT INTO sessions (token, "idUser") VALUES ($1, $2)`, [token, usuario.rows[0].id])
+            } else {
+                // Se o usuario ja tiver logado antes, apenas trocaremos seu token de validacao na tabela
+                await db.query(`UPDATE sessions SET token=$1 WHERE "idUser"=$2;`, [token, usuario.rows[0].id])
+            }
             // Finalizar com status de sucesso e enviar token para o cliente
             res.status(201).send({token})
     
