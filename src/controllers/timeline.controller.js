@@ -56,7 +56,7 @@ export async function getPost(req, res) {
     const sessaoEncontrada = sessao.rows[0];
 
     const posts = await db.query(
-      `SELECT posts.*,users.username 
+      `SELECT posts.*,users.username,users."pictureUrl"
       FROM posts 
       JOIN sessions ON sessions.id=posts."idSession" 
       JOIN users ON sessions."idUser"=users.id 
@@ -78,6 +78,7 @@ export async function getPost(req, res) {
             postId:allPosts[i].id,
             username:allPosts[i].username,
             text:allPosts[i].text,
+            pictureUrl:allPosts[i].pictureUrl,
             title:metadata['og:title'],
             description:metadata['og:description'],
             url:metadata['og:url'],
