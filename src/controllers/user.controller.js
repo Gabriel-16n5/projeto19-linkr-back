@@ -1,6 +1,7 @@
 import { db } from "../database/database.connection.js";
 
-export async function getusers(req, res) {
+export async function getPostsUser(req, res) {
+    const {id} = req.params
     try{
 
         res.send("oi");
