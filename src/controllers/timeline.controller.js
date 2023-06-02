@@ -68,7 +68,7 @@ export async function getPost(req, res) {
     let array = []
     
     for (let i=0;i<posts.rowCount;i++){  
-      const likes = await db.query(`SELECT users.username FROM likes JOIN users ON likes."userId"=users.id WHERE likes."postId"=${allPosts[i].id};`)  
+      let likes = await db.query(`SELECT users.username FROM likes JOIN users ON likes."userId"=users.id WHERE likes."postId"=${allPosts[i].id};`)  
       await urlMetadata(allPosts[i].url)
         .then((metadata) => {
           if (likes.rows===undefined){
@@ -156,7 +156,7 @@ export async function editPost(req, res) {
 
   try {
     // Caso o token exista, precisamos descobrir se ele é válido
-    const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [token,]);
+    const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [token]);
     // Verifica se há alguma sessão encontrada
     if (sessao.rows.length === 0) return res.status(401).send("Token inválido");
 
@@ -172,7 +172,8 @@ export async function editPost(req, res) {
       return res.status(401).send("Usuário não encontrado");
 
     // Verificar se o post existe e pertence ao usuário
-    const postExiste = await db.query(`SELECT * FROM posts WHERE id = $1 AND userId = $2`, [id, sessaoEncontrada.idUser]);
+    const postExiste = await db.query(`SELECT * FROM posts WHERE id = $1 AND "idSession" = $2`, [id, sessao.rows[0].id]);
+
     if (postExiste.rows.length === 0) {
       return res.status(404).send("Post não encontrado ou não pertence ao usuário");
     }
