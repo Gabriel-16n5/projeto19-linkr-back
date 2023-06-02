@@ -71,7 +71,6 @@ export async function deletePost(req, res) {
 
   // Se não houver token, não há autorização para continuar
   if (!token) return res.status(401).send("Token inexistente");
-  console.log(token)
   try {
     // Caso o token exista, precisamos descobrir se ele é válido
     const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [
@@ -82,12 +81,10 @@ export async function deletePost(req, res) {
 
     // Caso a sessão tenha sido encontrada, iremos guardar na variável "sessao" o objeto de sessão encontrado
     const sessaoEncontrada = sessao.rows[0];
-    console.log(sessaoEncontrada)
     // Tendo o id do usuário, podemos procurar seus dados
     const usuario = await db.query(`SELECT * FROM users WHERE id = $1`, [
       sessaoEncontrada.idUser,
     ]);
-    console.log(usuario.rows[0])
     // Verifica se o usuário foi encontrado
     if (usuario.rows.length === 0)
       return res.status(401).send("Usuário não encontrado");
