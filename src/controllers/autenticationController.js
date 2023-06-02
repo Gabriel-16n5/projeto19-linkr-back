@@ -49,7 +49,11 @@ export async function loginAccount(req, res) {
                 await db.query(`UPDATE sessions SET token=$1 WHERE "idUser"=$2;`, [token, usuario.rows[0].id])
             }
             // Finalizar com status de sucesso e enviar token para o cliente
-            res.status(201).send({token})
+
+            res.status(201).send({
+                token,
+                userUrl: usuario.rows[0].pictureUrl
+            })
     
         } catch (err) {
         res.send(err.message)
