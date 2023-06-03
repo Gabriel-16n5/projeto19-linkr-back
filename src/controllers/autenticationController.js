@@ -52,7 +52,9 @@ export async function loginAccount(req, res) {
 
             res.status(201).send({
                 token,
+                username: usuario.rows[0].username,
                 userUrl: usuario.rows[0].pictureUrl
+                
             })
     
         } catch (err) {
