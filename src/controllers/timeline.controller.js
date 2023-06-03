@@ -81,18 +81,17 @@ export async function getPost(req, res) {
             pictureUrl:allPosts[i].pictureUrl,
             title:metadata['og:title'],
             description:metadata['og:description'],
-            url:metadata['og:url'],
+            url:metadata.url,
             image:metadata['og:image'],
             peopleLike:likes.rows
           }
-          array.push(object) 
+            array.push(object) 
         },
           (err) => {
             console.log(err)
           })
-         
+          
       }
-      
     res.status(201).send(array);
   } catch (erro) {
     res.status(500).send(erro.message);
