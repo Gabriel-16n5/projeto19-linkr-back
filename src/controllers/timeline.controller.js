@@ -211,22 +211,23 @@ export async function postLikes(req, res) {
 }
 
 export async function deleteLikes(req, res) {
-  const { postId } = req.body
+  const { postId } = req.params;
   // O cliente deve enviar um header de authorization com o token
   const { authorization } = req.headers;
   // para pegar o token vamos tirar a palavra Bearer
   const token = authorization?.replace("Bearer ", "");
-   // Se não houver token, não há autorização para continuar
-   if (!token) return res.status(401).send("Token inexistente");
+  // Se não houver token, não há autorização para continuar
+  if (!token) return res.status(401).send("Token inexistente");
 
     try {
       const userId = await db.query(`SELECT * FROM sessions WHERE token=$1`, [token])
 
+      console.log(userId.rows[0].idUser)
+      console.log(postId)
+
       const likeInfo = await db.query(`SELECT * FROM likes WHERE "userId"=$1 AND "postId"=$2`, [userId.rows[0].idUser ,postId])
 
-      console.log(likeInfo.rows[0])
-
-      if (!likeInfo.rows[0]) return res.status(404).send("This post isnt liked by this user yet")
+      if (!likeInfo.rows[0]) return res.status(404).send("This post isn't liked by this user yet")
 
       await db.query(`DELETE FROM likes WHERE id=$1`, [likeInfo.rows[0].id])
 
