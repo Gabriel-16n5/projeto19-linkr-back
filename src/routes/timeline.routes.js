@@ -9,7 +9,7 @@ const timelineRouter = Router()
 timelineRouter.post("/timeline", validateSchema(postSchema), createPost);
 timelineRouter.get("/timeline", getPost);
 timelineRouter.post("/likes", postLikes);
-timelineRouter.delete("/likes", deleteLikes)
+timelineRouter.delete("/likes/:postId", deleteLikes)
 timelineRouter.delete("/timeline/:id", deletePost);
 timelineRouter.put("/timeline/:id", editPost);
 
