@@ -7,7 +7,7 @@ import userRouter from "./user.routes.js";
 const router = Router()
 router.use(autenticationRouter);
 router.use(timelineRouter);
-// router.use(userRouter);
+router.use(userRouter);
 router.use(hashtagRouter);
 
 export default router
