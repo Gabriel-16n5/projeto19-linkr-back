@@ -3,14 +3,24 @@ import urlMetadata from "url-metadata";
 import fetch from "node-fetch";
 global.fetch = fetch;
 
+export async function postTags(req, res) {
+  const { tag } = req.body
+  try {
+    const postTags = await db.query(`INSERT INTO tags (text) VALUES ($1);`, [tag[0]])
+    res.status(201).send(postTags.rows);
+  } catch (erro) {
+    res.send(erro.message);
+  }
+}
+
 export async function getTrending(req, res) {
   try {
     //gerar lista com as 10 hashtags mais usadas
     const trending = await db.query(
-      `SELECT text FROM tags
-                GROUP BY tags
-                ORDER BY COUNT(*) DESC
-                LIMIT 10`
+      `SELECT tags.text FROM tags
+      GROUP BY tags.text
+      ORDER BY COUNT(*) DESC
+      LIMIT 10`
     );
     res.status(201).send(trending.rows);
   } catch (erro) {
