@@ -56,7 +56,7 @@ export async function getPost(req, res) {
     const sessaoEncontrada = sessao.rows[0];
 
     const posts = await db.query(
-      `SELECT posts.*,users.username,users."pictureUrl"
+      `SELECT posts.*,users.username,users."pictureUrl",users.id AS "userId"
       FROM posts 
       JOIN sessions ON sessions.id=posts."idSession" 
       JOIN users ON sessions."idUser"=users.id 
@@ -76,6 +76,7 @@ export async function getPost(req, res) {
           }
           const object = {
             postId:allPosts[i].id,
+            userId:allPosts[i].userId,
             username:allPosts[i].username,
             text:allPosts[i].text,
             pictureUrl:allPosts[i].pictureUrl,
