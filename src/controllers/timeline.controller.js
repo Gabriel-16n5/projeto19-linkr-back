@@ -77,14 +77,7 @@ export async function getPost(req, res) {
     const allPosts = posts.rows
     
     let array = []
-    
-      // const tag = await db.query(
-      //   `SELECT tags.text
-      //   FROM tags
-      //   JOIN "tagsPosts" ON "tagsPosts"."idTag" =  tags.id
-      //   WHERE "tagsPosts"."idPost" = $1
-      //   `, [posts])
-      //   console.log(tag.rows)
+  
     for (let i=0;i<posts.rowCount;i++){  
       let likes = await db.query(`SELECT users.username FROM likes JOIN users ON likes."userId"=users.id WHERE likes."postId"=${allPosts[i].id};`)  
       await urlMetadata(allPosts[i].url)
@@ -112,7 +105,6 @@ export async function getPost(req, res) {
           })
           
       }
-      console.log(array)
     res.status(201).send(array);
   } catch (erro) {
     res.status(500).send(erro.message);

@@ -6,10 +6,12 @@ export async function getPostsUser(req, res) {
     const {id} = req.params
     try{
         const posts = await db.query(
-            `SELECT posts.*,users.username,users."pictureUrl"
+            `SELECT posts.*,users.username,users."pictureUrl", tags.text AS tag
             FROM posts 
             JOIN sessions ON sessions.id=posts."idSession" 
             JOIN users ON sessions."idUser"=users.id 
+            JOIN "tagsPosts" ON "tagsPosts"."idPost" = posts.id
+            JOIN tags ON "tagsPosts"."idTag" = tags.id
             WHERE users.id=${id}
             ORDER BY posts.id DESC LIMIT 20;`
           );
@@ -28,6 +30,7 @@ export async function getPostsUser(req, res) {
                   postId:allPosts[i].id,
                   username:allPosts[i].username,
                   text:allPosts[i].text,
+                  tag:allPosts[i].tag,
                   pictureUrl:allPosts[i].pictureUrl,
                   title:metadata['og:title'],
                   description:metadata['og:description'],
@@ -42,7 +45,7 @@ export async function getPostsUser(req, res) {
                 })
                 
             }
-
+            console.log(array)
 
         res.status(201).send(array);
     } catch (erro){

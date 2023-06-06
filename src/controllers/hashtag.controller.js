@@ -42,7 +42,7 @@ export async function getPostsByHashtag(req, res) {
   const { hashtag } = req.params;
   try {
     const posts = await db.query(
-      `SELECT posts.*, users.username, users."pictureUrl", "tagsPosts".*, tags.text AS hashtagname
+      `SELECT posts.*, users.username, users."pictureUrl", "tagsPosts".*, tags.text AS hashtagname, tags.text AS tag
       FROM posts
       JOIN sessions ON sessions.id = posts."idSession"
       JOIN users ON sessions."idUser" = users.id
@@ -69,6 +69,7 @@ export async function getPostsByHashtag(req, res) {
             postId:allPosts[i].id,
             username:allPosts[i].username,
             text:allPosts[i].text,
+            tag:allPosts[i].tag,
             pictureUrl:allPosts[i].pictureUrl,
             title:metadata['og:title'],
             description:metadata['og:description'],
@@ -82,6 +83,7 @@ export async function getPostsByHashtag(req, res) {
           (err) => {
             console.log(err)
           })
+        console.log(array)
       }
   res.status(201).send(array);
 } catch (erro){
