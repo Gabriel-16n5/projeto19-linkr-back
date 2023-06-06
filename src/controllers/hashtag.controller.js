@@ -83,7 +83,6 @@ export async function getPostsByHashtag(req, res) {
           (err) => {
             console.log(err)
           })
-          
       }
   res.status(201).send(array);
 } catch (erro){
