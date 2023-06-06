@@ -66,17 +66,25 @@ export async function getPost(req, res) {
     const sessaoEncontrada = sessao.rows[0];
 
     const posts = await db.query(
-      `SELECT posts.*,users.username,users."pictureUrl",users.id AS "userId"
+      `SELECT posts.*,users.username,users."pictureUrl",users.id AS "userId", tags.text AS tag
       FROM posts 
       JOIN sessions ON sessions.id=posts."idSession" 
-      JOIN users ON sessions."idUser"=users.id 
+      JOIN users ON sessions."idUser"=users.id
+	    JOIN "tagsPosts" ON "tagsPosts"."idPost" = posts.id
+	    JOIN tags ON "tagsPosts"."idTag" = tags.id
       ORDER BY posts.id DESC LIMIT 20;`
     );
-    
     const allPosts = posts.rows
     
     let array = []
     
+      // const tag = await db.query(
+      //   `SELECT tags.text
+      //   FROM tags
+      //   JOIN "tagsPosts" ON "tagsPosts"."idTag" =  tags.id
+      //   WHERE "tagsPosts"."idPost" = $1
+      //   `, [posts])
+      //   console.log(tag.rows)
     for (let i=0;i<posts.rowCount;i++){  
       let likes = await db.query(`SELECT users.username FROM likes JOIN users ON likes."userId"=users.id WHERE likes."postId"=${allPosts[i].id};`)  
       await urlMetadata(allPosts[i].url)
@@ -89,6 +97,7 @@ export async function getPost(req, res) {
             userId:allPosts[i].userId,
             username:allPosts[i].username,
             text:allPosts[i].text,
+            tag:allPosts[i].tag,
             pictureUrl:allPosts[i].pictureUrl,
             title:metadata['og:title'],
             description:metadata['og:description'],
@@ -103,6 +112,7 @@ export async function getPost(req, res) {
           })
           
       }
+      console.log(array)
     res.status(201).send(array);
   } catch (erro) {
     res.status(500).send(erro.message);
