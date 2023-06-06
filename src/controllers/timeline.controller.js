@@ -3,8 +3,7 @@ import urlMetadata from "url-metadata";
 import fetch from "node-fetch";
 global.fetch = fetch;
 export async function createPost(req, res) {
-  const { url, text } = req.body;
-
+  const { url, text, tag } = req.body;
   // O cliente deve enviar um header de authorization com o token
   const { authorization } = req.headers;
 
@@ -40,6 +39,17 @@ export async function createPost(req, res) {
     res.status(201).send("Post criado com sucesso");
   } catch (erro) {
     res.send(erro.message);
+  }
+  const postId = await db.query(`SELECT posts.id FROM posts Where posts.text = $1 AND posts.url = $2`,[text, url])
+  const tagId = await db.query(`SELECT tags.id FROM tags Where tags.text = $1 `,[tag])
+
+  try{
+    await db.query(
+      `INSERT INTO "tagsPosts"("idPost", "idTag") VALUES ($1, $2)`,
+      [postId.rows[0].id, tagId.rows[0].id]
+    );
+  } catch (erro) {
+    console.log(erro.message)
   }
 }
 

@@ -2,5 +2,6 @@ import joi from "joi";
 
 export const postSchema = joi.object({
     url: joi.string().uri().required(),
-    text: joi.string().allow('').optional()
+    text: joi.string().allow('').optional(),
+    tag: joi.string().allow('').optional()
 })
