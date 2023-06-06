@@ -3,8 +3,7 @@ import urlMetadata from "url-metadata";
 import fetch from "node-fetch";
 global.fetch = fetch;
 export async function createPost(req, res) {
-  const { url, text } = req.body;
-
+  const { url, text, tag } = req.body;
   // O cliente deve enviar um header de authorization com o token
   const { authorization } = req.headers;
 
@@ -41,6 +40,17 @@ export async function createPost(req, res) {
   } catch (erro) {
     res.send(erro.message);
   }
+  const postId = await db.query(`SELECT posts.id FROM posts Where posts.text = $1 AND posts.url = $2`,[text, url])
+  const tagId = await db.query(`SELECT tags.id FROM tags Where tags.text = $1 `,[tag])
+
+  try{
+    await db.query(
+      `INSERT INTO "tagsPosts"("idPost", "idTag") VALUES ($1, $2)`,
+      [postId.rows[0].id, tagId.rows[0].id]
+    );
+  } catch (erro) {
+    console.log(erro.message)
+  }
 }
 
 export async function getPost(req, res) {
@@ -56,17 +66,18 @@ export async function getPost(req, res) {
     const sessaoEncontrada = sessao.rows[0];
 
     const posts = await db.query(
-      `SELECT posts.*,users.username,users."pictureUrl",users.id AS "userId"
+      `SELECT posts.*,users.username,users."pictureUrl",users.id AS "userId", tags.text AS tag
       FROM posts 
       JOIN sessions ON sessions.id=posts."idSession" 
-      JOIN users ON sessions."idUser"=users.id 
+      JOIN users ON sessions."idUser"=users.id
+	    JOIN "tagsPosts" ON "tagsPosts"."idPost" = posts.id
+	    JOIN tags ON "tagsPosts"."idTag" = tags.id
       ORDER BY posts.id DESC LIMIT 20;`
     );
-    
     const allPosts = posts.rows
     
     let array = []
-    
+  
     for (let i=0;i<posts.rowCount;i++){  
       let likes = await db.query(`SELECT users.username FROM likes JOIN users ON likes."userId"=users.id WHERE likes."postId"=${allPosts[i].id};`)  
       await urlMetadata(allPosts[i].url)
@@ -79,6 +90,7 @@ export async function getPost(req, res) {
             userId:allPosts[i].userId,
             username:allPosts[i].username,
             text:allPosts[i].text,
+            tag:allPosts[i].tag,
             pictureUrl:allPosts[i].pictureUrl,
             title:metadata['og:title'],
             description:metadata['og:description'],
