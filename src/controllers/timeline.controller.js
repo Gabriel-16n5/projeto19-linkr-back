@@ -36,20 +36,16 @@ export async function createPost(req, res) {
       `INSERT INTO posts (url, text, "idSession") VALUES ($1, $2, $3)`,
       [url, text, sessaoEncontrada.id]
     );
+  const postId = await db.query(`SELECT posts.id FROM posts Where posts.text = $1 AND posts.url = $2`,[text, url])
+  const tagId = await db.query(`SELECT tags.id FROM tags Where tags.text = $1 `,[tag])
+  try{
+    const tagsposts = await db.query(`INSERT INTO "tagsPosts"("idPost", "idTag") VALUES ($1, $2)`,[postId.rows[0].id, tagId.rows[0].id]);
+  } catch (erro){
+    console.log("pipoca")
+  }
     res.status(201).send("Post criado com sucesso");
   } catch (erro) {
     res.send(erro.message);
-  }
-  const postId = await db.query(`SELECT posts.id FROM posts Where posts.text = $1 AND posts.url = $2`,[text, url])
-  const tagId = await db.query(`SELECT tags.id FROM tags Where tags.text = $1 `,[tag])
-
-  try{
-    await db.query(
-      `INSERT INTO "tagsPosts"("idPost", "idTag") VALUES ($1, $2)`,
-      [postId.rows[0].id, tagId.rows[0].id]
-    );
-  } catch (erro) {
-    console.log(erro.message)
   }
 }
 
@@ -61,7 +57,7 @@ export async function getPost(req, res) {
   try {
 
     const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [token]);
-
+ 
     if (sessao.rows.length === 0) return res.status(401).send("Token inválido");
     const sessaoEncontrada = sessao.rows[0];
 
@@ -75,9 +71,8 @@ export async function getPost(req, res) {
       ORDER BY posts.id DESC LIMIT 20;`
     );
     const allPosts = posts.rows
-    
     let array = []
-  
+
     for (let i=0;i<posts.rowCount;i++){  
       let likes = await db.query(`SELECT users.username FROM likes JOIN users ON likes."userId"=users.id WHERE likes."postId"=${allPosts[i].id};`)  
       await urlMetadata(allPosts[i].url)
@@ -103,7 +98,6 @@ export async function getPost(req, res) {
           (err) => {
             console.log(err)
           })
-          
       }
     res.status(201).send(array);
   } catch (erro) {
