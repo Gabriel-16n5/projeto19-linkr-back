@@ -61,7 +61,7 @@ export async function getPost(req, res) {
   try {
 
     const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [token]);
-
+ 
     if (sessao.rows.length === 0) return res.status(401).send("Token inválido");
     const sessaoEncontrada = sessao.rows[0];
 
@@ -75,9 +75,9 @@ export async function getPost(req, res) {
       ORDER BY posts.id DESC LIMIT 20;`
     );
     const allPosts = posts.rows
-    
+    console.log(allPosts)
     let array = []
-  
+
     for (let i=0;i<posts.rowCount;i++){  
       let likes = await db.query(`SELECT users.username FROM likes JOIN users ON likes."userId"=users.id WHERE likes."postId"=${allPosts[i].id};`)  
       await urlMetadata(allPosts[i].url)
@@ -103,7 +103,6 @@ export async function getPost(req, res) {
           (err) => {
             console.log(err)
           })
-          
       }
     res.status(201).send(array);
   } catch (erro) {
