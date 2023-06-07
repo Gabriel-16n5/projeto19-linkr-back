@@ -146,6 +146,7 @@ export async function deletePost(req, res) {
     }
 
     //Deletar
+    await db.query(`DELETE FROM "tagsPosts" WHERE "idPost"=$1`, [id]);
     await db.query(`DELETE FROM posts WHERE id=$1`, [id]);
 
     res.status(201).send("Post deletado com sucesso");
