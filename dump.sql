@@ -5,7 +5,7 @@
 -- Dumped from database version 14.8 (Ubuntu 14.8-0ubuntu0.22.04.1)
 -- Dumped by pg_dump version 14.8 (Ubuntu 14.8-0ubuntu0.22.04.1)
 
--- Started on 2023-06-02 17:19:36 -03
+-- Started on 2023-06-07 18:22:26 -03
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -23,7 +23,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 220 (class 1259 OID 83218)
+-- TOC entry 220 (class 1259 OID 84084)
 -- Name: likes; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -35,7 +35,7 @@ CREATE TABLE public.likes (
 
 
 --
--- TOC entry 219 (class 1259 OID 83217)
+-- TOC entry 219 (class 1259 OID 84083)
 -- Name: likes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -49,7 +49,7 @@ CREATE SEQUENCE public.likes_id_seq
 
 
 --
--- TOC entry 3404 (class 0 OID 0)
+-- TOC entry 3406 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: likes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -58,7 +58,7 @@ ALTER SEQUENCE public.likes_id_seq OWNED BY public.likes.id;
 
 
 --
--- TOC entry 212 (class 1259 OID 75040)
+-- TOC entry 212 (class 1259 OID 84028)
 -- Name: posts; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -71,7 +71,7 @@ CREATE TABLE public.posts (
 
 
 --
--- TOC entry 211 (class 1259 OID 75039)
+-- TOC entry 211 (class 1259 OID 84027)
 -- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -85,7 +85,7 @@ CREATE SEQUENCE public.posts_id_seq
 
 
 --
--- TOC entry 3405 (class 0 OID 0)
+-- TOC entry 3407 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -94,7 +94,7 @@ ALTER SEQUENCE public.posts_id_seq OWNED BY public.posts.id;
 
 
 --
--- TOC entry 218 (class 1259 OID 75065)
+-- TOC entry 218 (class 1259 OID 84055)
 -- Name: sessions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -106,7 +106,7 @@ CREATE TABLE public.sessions (
 
 
 --
--- TOC entry 217 (class 1259 OID 75064)
+-- TOC entry 217 (class 1259 OID 84054)
 -- Name: sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -120,7 +120,7 @@ CREATE SEQUENCE public.sessions_id_seq
 
 
 --
--- TOC entry 3406 (class 0 OID 0)
+-- TOC entry 3408 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -129,7 +129,7 @@ ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
 
 
 --
--- TOC entry 214 (class 1259 OID 75049)
+-- TOC entry 214 (class 1259 OID 84037)
 -- Name: tags; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -140,19 +140,19 @@ CREATE TABLE public.tags (
 
 
 --
--- TOC entry 216 (class 1259 OID 75058)
+-- TOC entry 216 (class 1259 OID 84046)
 -- Name: tagsPosts; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public."tagsPosts" (
     id integer NOT NULL,
-    "idPost" integer NOT NULL,
-    "idTag" integer NOT NULL
+    "idPost" integer DEFAULT 1,
+    "idTag" integer DEFAULT 1
 );
 
 
 --
--- TOC entry 215 (class 1259 OID 75057)
+-- TOC entry 215 (class 1259 OID 84045)
 -- Name: tagsPosts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -166,7 +166,7 @@ CREATE SEQUENCE public."tagsPosts_id_seq"
 
 
 --
--- TOC entry 3407 (class 0 OID 0)
+-- TOC entry 3409 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: tagsPosts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -175,7 +175,7 @@ ALTER SEQUENCE public."tagsPosts_id_seq" OWNED BY public."tagsPosts".id;
 
 
 --
--- TOC entry 213 (class 1259 OID 75048)
+-- TOC entry 213 (class 1259 OID 84036)
 -- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -189,7 +189,7 @@ CREATE SEQUENCE public.tags_id_seq
 
 
 --
--- TOC entry 3408 (class 0 OID 0)
+-- TOC entry 3410 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -198,7 +198,7 @@ ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
 
 
 --
--- TOC entry 210 (class 1259 OID 75027)
+-- TOC entry 210 (class 1259 OID 84015)
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -212,7 +212,7 @@ CREATE TABLE public.users (
 
 
 --
--- TOC entry 209 (class 1259 OID 75026)
+-- TOC entry 209 (class 1259 OID 84014)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -226,7 +226,7 @@ CREATE SEQUENCE public.users_id_seq
 
 
 --
--- TOC entry 3409 (class 0 OID 0)
+-- TOC entry 3411 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -235,7 +235,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 3237 (class 2604 OID 83221)
+-- TOC entry 3239 (class 2604 OID 84087)
 -- Name: likes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -243,7 +243,7 @@ ALTER TABLE ONLY public.likes ALTER COLUMN id SET DEFAULT nextval('public.likes_
 
 
 --
--- TOC entry 3233 (class 2604 OID 75043)
+-- TOC entry 3233 (class 2604 OID 84031)
 -- Name: posts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -251,7 +251,7 @@ ALTER TABLE ONLY public.posts ALTER COLUMN id SET DEFAULT nextval('public.posts_
 
 
 --
--- TOC entry 3236 (class 2604 OID 75068)
+-- TOC entry 3238 (class 2604 OID 84058)
 -- Name: sessions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -259,7 +259,7 @@ ALTER TABLE ONLY public.sessions ALTER COLUMN id SET DEFAULT nextval('public.ses
 
 
 --
--- TOC entry 3234 (class 2604 OID 75052)
+-- TOC entry 3234 (class 2604 OID 84040)
 -- Name: tags id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -267,7 +267,7 @@ ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id
 
 
 --
--- TOC entry 3235 (class 2604 OID 75061)
+-- TOC entry 3235 (class 2604 OID 84049)
 -- Name: tagsPosts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -275,7 +275,7 @@ ALTER TABLE ONLY public."tagsPosts" ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3232 (class 2604 OID 75030)
+-- TOC entry 3232 (class 2604 OID 84018)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -283,7 +283,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3253 (class 2606 OID 83223)
+-- TOC entry 3255 (class 2606 OID 84089)
 -- Name: likes likes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -292,7 +292,7 @@ ALTER TABLE ONLY public.likes
 
 
 --
--- TOC entry 3245 (class 2606 OID 75047)
+-- TOC entry 3247 (class 2606 OID 84035)
 -- Name: posts posts_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -301,7 +301,7 @@ ALTER TABLE ONLY public.posts
 
 
 --
--- TOC entry 3251 (class 2606 OID 75072)
+-- TOC entry 3253 (class 2606 OID 84062)
 -- Name: sessions sessions_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -310,7 +310,7 @@ ALTER TABLE ONLY public.sessions
 
 
 --
--- TOC entry 3249 (class 2606 OID 75063)
+-- TOC entry 3251 (class 2606 OID 84053)
 -- Name: tagsPosts tagsPosts_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -319,7 +319,7 @@ ALTER TABLE ONLY public."tagsPosts"
 
 
 --
--- TOC entry 3247 (class 2606 OID 75056)
+-- TOC entry 3249 (class 2606 OID 84044)
 -- Name: tags tags_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -328,7 +328,7 @@ ALTER TABLE ONLY public.tags
 
 
 --
--- TOC entry 3239 (class 2606 OID 75036)
+-- TOC entry 3241 (class 2606 OID 84024)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -337,7 +337,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3241 (class 2606 OID 75034)
+-- TOC entry 3243 (class 2606 OID 84022)
 -- Name: users users_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -346,7 +346,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3243 (class 2606 OID 75038)
+-- TOC entry 3245 (class 2606 OID 84026)
 -- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -355,7 +355,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3259 (class 2606 OID 83229)
+-- TOC entry 3261 (class 2606 OID 84095)
 -- Name: likes likes_postId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -364,7 +364,7 @@ ALTER TABLE ONLY public.likes
 
 
 --
--- TOC entry 3258 (class 2606 OID 83224)
+-- TOC entry 3260 (class 2606 OID 84090)
 -- Name: likes likes_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -373,7 +373,7 @@ ALTER TABLE ONLY public.likes
 
 
 --
--- TOC entry 3254 (class 2606 OID 75073)
+-- TOC entry 3256 (class 2606 OID 84063)
 -- Name: posts posts_fk0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -382,7 +382,7 @@ ALTER TABLE ONLY public.posts
 
 
 --
--- TOC entry 3257 (class 2606 OID 75088)
+-- TOC entry 3259 (class 2606 OID 84078)
 -- Name: sessions sessions_fk0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -391,7 +391,7 @@ ALTER TABLE ONLY public.sessions
 
 
 --
--- TOC entry 3255 (class 2606 OID 75078)
+-- TOC entry 3257 (class 2606 OID 84068)
 -- Name: tagsPosts tagsPosts_fk0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -400,7 +400,7 @@ ALTER TABLE ONLY public."tagsPosts"
 
 
 --
--- TOC entry 3256 (class 2606 OID 75083)
+-- TOC entry 3258 (class 2606 OID 84073)
 -- Name: tagsPosts tagsPosts_fk1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -408,8 +408,9 @@ ALTER TABLE ONLY public."tagsPosts"
     ADD CONSTRAINT "tagsPosts_fk1" FOREIGN KEY ("idTag") REFERENCES public.tags(id);
 
 
--- Completed on 2023-06-02 17:19:36 -03
+-- Completed on 2023-06-07 18:22:27 -03
 
 --
 -- PostgreSQL database dump complete
 --
+
