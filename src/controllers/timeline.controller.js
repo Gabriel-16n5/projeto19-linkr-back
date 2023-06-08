@@ -2,33 +2,22 @@ import { db } from "../database/database.connection.js";
 import urlMetadata from "url-metadata";
 import fetch from "node-fetch";
 global.fetch = fetch;
+
 export async function createPost(req, res) {
   const { url, text, tag } = req.body;
-  // O cliente deve enviar um header de authorization com o token
   const { authorization } = req.headers;
-
-  // para pegar o token vamos tirar a palavra Bearer
   const token = authorization?.replace("Bearer ", "");
-
-  // Se não houver token, não há autorização para continuar
   if (!token) return res.status(401).send("Token inexistente");
 
   try {
-    // Caso o token exista, precisamos descobrir se ele é válido
     const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [
       token,
     ]);
-    // Verifica se há alguma sessão encontrada
     if (sessao.rows.length === 0) return res.status(401).send("Token inválido");
-
-    // Caso a sessão tenha sido encontrada, iremos guardar na variável "sessao" o objeto de sessão encontrado
     const sessaoEncontrada = sessao.rows[0];
-
-    // Tendo o id do usuário, podemos procurar seus dados
     const usuario = await db.query(`SELECT * FROM users WHERE id = $1`, [
       sessaoEncontrada.idUser,
     ]);
-    // Verifica se o usuário foi encontrado
     if (usuario.rows.length === 0)
       return res.status(401).send("Usuário não encontrado");
 
@@ -36,16 +25,25 @@ export async function createPost(req, res) {
       `INSERT INTO posts (url, text, "idSession") VALUES ($1, $2, $3)`,
       [url, text, sessaoEncontrada.id]
     );
-  const postId = await db.query(`SELECT posts.id FROM posts Where posts.text = $1 AND posts.url = $2`,[text, url])
-  const tagId = await db.query(`SELECT tags.id FROM tags Where tags.text = $1 `,[tag])
-  try{
-    const tagsposts = await db.query(`INSERT INTO "tagsPosts"("idPost", "idTag") VALUES ($1, $2)`,[postId.rows[0].id, tagId.rows[0].id]);
-  } catch (erro){
-    console.log("pipoca")
-  }
+    
+    const postId = await db.query(
+      `SELECT posts.id FROM posts WHERE posts.text = $1 AND posts.url = $2`,
+      [text, url]
+    );
+
+    const tagId = await db.query(`SELECT tags.id FROM tags WHERE tags.text = $1`, [
+      tag,
+    ]);
+
+    await db.query(`INSERT INTO "tagsPosts" ("idPost", "idTag") VALUES ($1, $2)`, [
+      postId.rows[0].id,
+      tagId.rows[0].id,
+    ]);
+
     res.status(201).send("Post criado com sucesso");
   } catch (erro) {
-    res.send(erro.message);
+    console.error(erro);
+    res.status(500).send("Ocorreu um erro ao criar o post");
   }
 }
 
@@ -229,9 +227,6 @@ export async function deleteLikes(req, res) {
 
     try {
       const userId = await db.query(`SELECT * FROM sessions WHERE token=$1`, [token])
-
-      console.log(userId.rows[0].idUser)
-      console.log(postId)
 
       const likeInfo = await db.query(`SELECT * FROM likes WHERE "userId"=$1 AND "postId"=$2`, [userId.rows[0].idUser ,postId])
 
