@@ -249,3 +249,30 @@ try {
       res.status(500).send(erro.message);
     }
 }
+
+export async function getComments(req, res) {
+  const {idPost} = req.params;
+  try {
+    const comments = await db.query(
+      `SELECT comments.*, users.* FROM comments
+        JOIN users ON comments."idUser" = users.id
+        WHERE "idPost" = $1
+      `, [idPost]
+    );
+    res.status(201).send(comments.rows);
+  } catch (erro) {
+    res.send(erro.message);
+  }
+}
+
+export async function postComments(req, res) {
+  const { postId, idUser, commentary } = req.body
+    try {
+      await db.query(`
+      INSERT INTO comments ("idPost", "idUser", "text") VALUES ($1, $2, $3)
+      `, [postId, idUser, commentary])
+      res.status(200).send("Posted successfully")
+    } catch (erro) {
+      res.send(erro.message);
+    }
+}
