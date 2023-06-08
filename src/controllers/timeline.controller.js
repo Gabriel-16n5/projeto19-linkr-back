@@ -244,3 +244,13 @@ export async function deleteLikes(req, res) {
       res.send(erro.message);
     }
 }
+// pega a quantidade de posts existentes ate o momento
+export async function newPosts(req, res) {
+try {
+  const posts = await db.query(`SELECT COUNT(*) FROM posts;`)
+  
+  res.send(posts.rows[0].count).status(200)
+} catch (erro) {
+      res.status(500).send(erro.message);
+    }
+}
