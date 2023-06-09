@@ -3,7 +3,7 @@ import urlMetadata from "url-metadata";
 import fetch from "node-fetch";
 global.fetch = fetch;
 export async function getPostsUser(req, res) {
-    const {id} = req.params
+    const {id,num} = req.params
     try{
         const posts = await db.query(
             `SELECT posts.*,users.username,users."pictureUrl", tags.text AS tag
@@ -13,7 +13,7 @@ export async function getPostsUser(req, res) {
             JOIN "tagsPosts" ON "tagsPosts"."idPost" = posts.id
             JOIN tags ON "tagsPosts"."idTag" = tags.id
             WHERE users.id=${id}
-            ORDER BY posts.id DESC LIMIT 20;`
+            ORDER BY posts.id DESC LIMIT ${num};`
           );
           const allPosts = posts.rows
     
