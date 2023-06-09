@@ -7,7 +7,7 @@ import {postSchema} from "../schemas/posts.schemas.js";
 const timelineRouter = Router()
 
 timelineRouter.post("/timeline", validateSchema(postSchema), createPost);
-timelineRouter.get("/timeline", getPost);
+timelineRouter.get("/timeline/:num", getPost);
 timelineRouter.post("/likes", postLikes);
 timelineRouter.delete("/likes/:postId", deleteLikes)
 timelineRouter.delete("/timeline/:id", deletePost);
