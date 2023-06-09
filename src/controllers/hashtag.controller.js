@@ -39,7 +39,7 @@ export async function getTrending(req, res) {
 }
 
 export async function getPostsByHashtag(req, res) {
-  const { hashtag } = req.params;
+  const { hashtag,num } = req.params;
   try {
     const posts = await db.query(
       `SELECT posts.*, users.username, users.id AS "userId",users."pictureUrl", "tagsPosts".*, tags.text AS hashtagname, tags.text AS tag
@@ -50,7 +50,7 @@ export async function getPostsByHashtag(req, res) {
 	    JOIN tags ON "tagsPosts"."idTag" = tags.id
       WHERE tags.text = $1
       ORDER BY posts.id DESC
-      LIMIT 20;`, [hashtag]
+      LIMIT ${num};`, [hashtag]
     );
     const allPosts = posts.rows
     let array = []

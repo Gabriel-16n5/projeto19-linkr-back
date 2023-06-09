@@ -5,7 +5,7 @@ const hashtagRouter = Router()
 
 hashtagRouter.post("/hashtag", postTags);
 hashtagRouter.get("/hashtag", getTrending);
-hashtagRouter.get("/hashtag/:hashtag", getPostsByHashtag);
+hashtagRouter.get("/hashtag/:hashtag/:num", getPostsByHashtag);
 
 
 export default hashtagRouter;
