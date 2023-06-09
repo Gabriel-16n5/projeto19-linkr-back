@@ -42,7 +42,7 @@ export async function getPostsByHashtag(req, res) {
   const { hashtag } = req.params;
   try {
     const posts = await db.query(
-      `SELECT posts.*, users.username, users."pictureUrl", "tagsPosts".*, tags.text AS hashtagname, tags.text AS tag
+      `SELECT posts.*, users.username, users.id AS "userId",users."pictureUrl", "tagsPosts".*, tags.text AS hashtagname, tags.text AS tag
       FROM posts
       JOIN sessions ON sessions.id = posts."idSession"
       JOIN users ON sessions."idUser" = users.id
@@ -67,6 +67,7 @@ export async function getPostsByHashtag(req, res) {
           }
           const object = {
             postId:allPosts[i].id,
+            userId:allPosts[i].userId,
             username:allPosts[i].username,
             text:allPosts[i].text,
             tag:allPosts[i].tag,

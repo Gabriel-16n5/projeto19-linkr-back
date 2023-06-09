@@ -48,7 +48,7 @@ export async function createPost(req, res) {
 }
 
 export async function getPost(req, res) {
-
+ const {num} = req.params
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
   if (!token) return res.status(401).send("Token inexistente");
@@ -66,9 +66,10 @@ export async function getPost(req, res) {
       JOIN users ON sessions."idUser"=users.id
 	    JOIN "tagsPosts" ON "tagsPosts"."idPost" = posts.id
 	    JOIN tags ON "tagsPosts"."idTag" = tags.id
-      ORDER BY posts.id DESC LIMIT 20;`
+      ORDER BY posts.id DESC LIMIT ${num};`
     );
     const allPosts = posts.rows
+    console.log(allPosts)
     let array = []
 
     for (let i=0;i<posts.rowCount;i++){  
