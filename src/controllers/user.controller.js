@@ -45,7 +45,6 @@ export async function getPostsUser(req, res) {
                 })
                 
             }
-            console.log(array)
 
         res.status(201).send(array);
     } catch (erro){

@@ -55,7 +55,7 @@ export async function getPost(req, res) {
   try {
 
     const sessao = await db.query(`SELECT * FROM sessions WHERE token = $1`, [token]);
- 
+
     if (sessao.rows.length === 0) return res.status(401).send("Token inválido");
     const sessaoEncontrada = sessao.rows[0];
 
@@ -69,7 +69,6 @@ export async function getPost(req, res) {
       ORDER BY posts.id DESC LIMIT ${num};`
     );
     const allPosts = posts.rows
-    console.log(allPosts)
     let array = []
 
     for (let i=0;i<posts.rowCount;i++){  

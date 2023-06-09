@@ -29,3 +29,15 @@ export async function postFollowers(req, res) {
       res.send(erro.message);
     }
   }
+
+  export async function GetFollowers(req, res) {
+    const {idUser} = req.params
+
+    const checkFollow = await db.query(`SELECT * FROM followers; `)
+    try {
+      console.log({a: checkFollow.rows, idUser})
+        res.status(201).send({a: checkFollow.rows, idUser})
+    } catch (erro) {
+      res.send(erro.message);
+    }
+  }
